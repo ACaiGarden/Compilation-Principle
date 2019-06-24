@@ -294,12 +294,12 @@ int getsym()
 	int i,j,k;
 
 	/* the original version lacks "\r", thanks to foolevery */
-	while (ch==' ' || ch==10 || ch==9)  /* ���Կո񡢻��С��س���TAB */
+	while (ch==' ' || ch==10 || ch==9)
 	{
 		getchdo;
 	}
 	if (ch>='a' && ch<='z')
-	{           /* ���ֻ���������a..z��ͷ */
+	{
 		k = 0;
 		do {
 			if(k<al)
@@ -398,14 +398,66 @@ int getsym()
 					}
 					else
 					{
-						sym = ssym[ch];     /* �����Ų�������������ʱ��ȫ�����յ��ַ����Ŵ��� */
-						//getchdo;
-						//richard
-						if (sym != period)
-						{
-							getchdo;
-						}
-						//end richard
+					    if(ch == '+')
+                        {
+                            getchdo;
+                            if(ch == '=')
+                            {
+                                sym = pluseql;
+                                getchdo;
+                            }
+                            else
+                            {
+                                if(ch == '+')
+                                {
+                                    sym = plusplus;
+                                    getchdo;
+                                }
+                                else
+                                {
+                                    sym = ssym[ch];
+                                    //getchdo;
+                                    //richard
+                                    if (sym != period)
+                                    {
+                                        getchdo;
+                                    }
+                                    //end richard
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(ch == '-')
+                            {
+                                getchdo;
+                                if(ch == '=')
+                                {
+                                    sym = minuseql;
+                                    getchdo;
+                                }
+                                else
+                                {
+                                    if(ch == '-')
+                                    {
+                                        sym = minusminus;
+                                        getchdo;
+                                    }
+                                    else
+                                    {
+                                        sym = ssym[ch];
+                                        //getchdo;
+                                        //richard
+                                        if (sym != period)
+                                        {
+                                            getchdo;
+                                        }
+                                        //end richard
+                                    }
+                                }
+                            }
+                        }
+
 					}
 				}
 			}
@@ -969,6 +1021,7 @@ int statement(bool* fsys, int* ptx, int lev)
 							}
 							else
 							{
+
 								memset(nxtlev, 0, sizeof(bool)*symnum); /* ���������޲��ȼ��� */
 								testdo(fsys, nxtlev, 19);   /* ����������������ȷ�� */
 							}
