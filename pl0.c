@@ -19,7 +19,6 @@
 #include "pl0.h"
 #include "string.h"
 
-/* ����ִ��ʱʹ�õ�ջ */
 #define stacksize 500
 
 
@@ -138,6 +137,10 @@ void init()
 	strcpy(&(word[10][0]), "var");
 	strcpy(&(word[11][0]), "while");
 	strcpy(&(word[12][0]), "write");
+	strcpy(&(word[13][0]), "for");
+	strcpy(&(word[14][0]), "to");
+	strcpy(&(word[15][0]), "downto");
+	strcpy(&(word[16][0]), "return");
 
 	/* ���ñ����ַ��� */
 	wsym[0] = beginsym;
@@ -153,6 +156,10 @@ void init()
 	wsym[10] = varsym;
 	wsym[11] = whilesym;
 	wsym[12] = writesym;
+	wsym[13] = forsym;
+	wsym[14] = tosym;
+	wsym[15] = downtosym;
+	wsym[16] = returnsym;
 
 	/* ����ָ������ */
 	strcpy(&(mnemonic[lit][0]), "lit");
@@ -243,13 +250,7 @@ void error(int n)
 	err++;
 }
 
-/*
-* ©���ո񣬶�ȡһ���ַ���
-*
-* ÿ�ζ�һ�У�����line��������line��getsymȡ�պ��ٶ�һ��
-*
-* ������getsym���á�
-*/
+
 int getch()
 {
 	if (cc == ll)
@@ -287,9 +288,7 @@ int getch()
 	return 0;
 }
 
-/*
-* �ʷ���������ȡһ������
-*/
+
 int getsym()
 {
 	int i,j,k;
@@ -416,7 +415,7 @@ int getsym()
 }
 
 /*
-* ��������������
+*
 *
 * x: instruction.f;
 * y: instruction.l;
@@ -437,24 +436,12 @@ int gen(enum fct x, int y, int z )
 }
 
 
-/*
-* ���Ե�ǰ�����Ƿ��Ϸ�
-*
-* ��ĳһ���֣���һ�����䣬һ������ʽ����Ҫ����ʱʱ����ϣ����һ����������ĳ����
-*���ò��ֵĺ������ţ���test�����������⣬���Ҹ��𵱼��ⲻͨ��ʱ�Ĳ��ȴ�ʩ
-* ��������Ҫ����ʱָ����ǰ��Ҫ�ķ��ż��ϺͲ����õļ��ϣ���֮ǰδ���ɲ��ֵĺ���
-* ���ţ����Լ����ⲻͨ��ʱ�Ĵ�����
-*
-* s1:   ������Ҫ�ķ���
-* s2:   ��������������Ҫ�ģ�����Ҫһ�������õļ���
-* n:    ������
-*/
 int test(bool* s1, bool* s2, int n)
 {
 	if (!inset(sym, s1))
 	{
 		error(n);
-		/* �����ⲻͨ��ʱ����ͣ��ȡ���ţ�ֱ����������Ҫ�ļ��ϻ򲹾ȵļ��� */
+
 		while ((!inset(sym,s1)) && (!inset(sym,s2)))
 		{
 			getsymdo;
@@ -464,7 +451,7 @@ int test(bool* s1, bool* s2, int n)
 }
 
 /*
-* ������������
+*
 *
 * lev:    ��ǰ�ֳ������ڲ�
 * tx:     ���ֱ���ǰβָ��
@@ -694,9 +681,7 @@ int position(char* idt, int tx)
 	return i;
 }
 
-/*
-* ������������
-*/
+
 int constdeclaration(int* ptx, int lev, int* pdx)
 {
 	if (sym == ident)
@@ -731,9 +716,7 @@ int constdeclaration(int* ptx, int lev, int* pdx)
 	return 0;
 }
 
-/*
-* ������������
-*/
+
 int vardeclaration(int* ptx,int lev,int* pdx)
 {
 	if (sym == ident)
@@ -748,9 +731,7 @@ int vardeclaration(int* ptx,int lev,int* pdx)
 	return 0;
 }
 
-/*
-* ����Ŀ�������嵥
-*/
+
 void listcode(int cx0)
 {
 	int i;
@@ -764,9 +745,7 @@ void listcode(int cx0)
 	}
 }
 
-/*
-* ���䴦��
-*/
+
 int statement(bool* fsys, int* ptx, int lev)
 {
 	int i, cx1, cx2;
@@ -1002,33 +981,31 @@ int statement(bool* fsys, int* ptx, int lev)
 	return 0;
 }
 
-/*
-* ����ʽ����
-*/
+
 int expression(bool* fsys, int* ptx, int lev)
 {
-	enum symbol addop;  /* ���ڱ��������� */
+	enum symbol addop;
 	bool nxtlev[symnum];
 
-	if(sym==plus || sym==minus) /* ��ͷ�������ţ���ʱ��ǰ����ʽ������һ�����Ļ򸺵��� */
+	if(sym==plus || sym==minus)
 	{
-		addop = sym;    /* ���濪ͷ�������� */
+		addop = sym;
 		getsymdo;
 		memcpy(nxtlev, fsys, sizeof(bool)*symnum);
 		nxtlev[plus] = true;
 		nxtlev[minus] = true;
-		termdo(nxtlev, ptx, lev);   /* ������ */
+		termdo(nxtlev, ptx, lev);
 		if (addop == minus)
 		{
-			gendo(opr,0,1); /* ������ͷΪ��������ȡ��ָ�� */
+			gendo(opr,0,1);
 		}
 	}
-	else    /* ��ʱ����ʽ���������ļӼ� */
+	else
 	{
 		memcpy(nxtlev, fsys, sizeof(bool)*symnum);
 		nxtlev[plus] = true;
 		nxtlev[minus] = true;
-		termdo(nxtlev, ptx, lev);   /* ������ */
+		termdo(nxtlev, ptx, lev);
 	}
 	while (sym==plus || sym==minus)
 	{
@@ -1037,22 +1014,20 @@ int expression(bool* fsys, int* ptx, int lev)
 		memcpy(nxtlev, fsys, sizeof(bool)*symnum);
 		nxtlev[plus] = true;
 		nxtlev[minus] = true;
-		termdo(nxtlev, ptx, lev);   /* ������ */
+		termdo(nxtlev, ptx, lev);
 		if (addop == plus)
 		{
-			gendo(opr, 0, 2);   /* ���ɼӷ�ָ�� */
+			gendo(opr, 0, 2);
 		}
 		else
 		{
-			gendo(opr, 0, 3);   /* ���ɼ���ָ�� */
+			gendo(opr, 0, 3);
 		}
 	}
 	return 0;
 }
 
-/*
-* ���
-*/
+
 int term(bool* fsys, int* ptx, int lev)
 {
 	enum symbol mulop;  /* ���ڱ����˳������� */
@@ -1079,9 +1054,7 @@ int term(bool* fsys, int* ptx, int lev)
 	return 0;
 }
 
-/*
-* ���Ӵ���
-*/
+
 int factor(bool* fsys, int* ptx, int lev)
 {
 	int i;
@@ -1149,9 +1122,7 @@ int factor(bool* fsys, int* ptx, int lev)
 	return 0;
 }
 
-/*
-* ��������
-*/
+
 int condition(bool* fsys, int* ptx, int lev)
 {
 	enum symbol relop;
@@ -1209,9 +1180,7 @@ int condition(bool* fsys, int* ptx, int lev)
 	return 0;
 }
 
-/*
-* ���ͳ���
-*/
+
 void interpret()
 {
 	int p, b, t;    /* ָ��ָ�룬ָ����ַ��ջ��ָ�� */
@@ -1336,7 +1305,7 @@ void interpret()
 	} while (p != 0);
 }
 
-/* ͨ�����̻�ַ����l�����̵Ļ�ַ */
+
 int base(int l, int* s, int b)
 {
 	int b1;

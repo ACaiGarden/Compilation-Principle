@@ -28,7 +28,8 @@ enum symbol {
     rparen,      comma,     semicolon,  period,    becomes,
     beginsym,    endsym,    ifsym,      thensym,   whilesym,
     writesym,    readsym,   dosym,      callsym,   constsym,
-    varsym,      procsym,
+    varsym,      procsym,   forsym,     tosym,     downtosym,
+    returnsym
 };
 #define symnum 32
 
