@@ -120,7 +120,7 @@ void init()
 	ssym['='] = eql;
 	ssym[','] = comma;
 	ssym['.'] = period;
-	ssym['#'] = neq;
+	//ssym['#'] = neq;
 	ssym[';'] = semicolon;
 
 	/* ���ñ���������,������ĸ˳�򣬱����۰����� */
@@ -368,7 +368,7 @@ int getsym()
 			}
 			else
 			{
-				if (ch == '<')      /* ����С�ڻ�С�ڵ��ڷ��� */
+				if (ch == '<')
 				{
 					getchdo;
 					if (ch == '=')
@@ -378,12 +378,19 @@ int getsym()
 					}
 					else
 					{
-						sym = lss;
+					    if(ch == '>')
+                        {
+                            sym = neq;
+                        }
+                        else
+                        {
+                            sym = lss;
+                        }
 					}
 				}
 				else
 				{
-					if (ch=='>')        /* �������ڻ����ڵ��ڷ��� */
+					if (ch=='>')
 					{
 						getchdo;
 						if (ch == '=')
