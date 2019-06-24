@@ -29,7 +29,8 @@ enum symbol {
     beginsym,    endsym,    ifsym,      thensym,   whilesym,
     writesym,    readsym,   dosym,      callsym,   constsym,
     varsym,      procsym,   forsym,     tosym,     downtosym,
-    pluseql,     minuseql,  plusplus,   minusminus,returnsym
+    pluseql,     minuseql,  plusplus,   minusminus,returnsym,
+    elsesym
 };
 #define symnum 32
 

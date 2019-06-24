@@ -964,12 +964,24 @@ int statement(bool* fsys, int* ptx, int lev)
 						}
 						else
 						{
-							error(16);  /* ȱ��then */
+							error(16);
 						}
-						cx1 = cx;   /* ���浱ǰָ����ַ */
-						gendo(jpc, 0, 0);   /* ����������תָ���ת��ַδ֪����ʱд0 */
-						statementdo(fsys, ptx, lev);    /* ����then�������� */
-						code[cx1].a = cx;   /* ��statement��������cxΪthen������ִ������λ�ã�������ǰ��δ������ת��ַ */
+						cx1 = cx;
+						gendo(jpc, 0, 0);
+						statementdo(fsys, ptx, lev);
+                        if(sym!=elsesym)
+                            code[cx1].a=cx;
+                        else
+                        {
+                            getsym();
+                            cx2=cx;
+                            gen(jmp,0,0);
+                            code[cx1].a=cx;
+                            statementdo(fsys, ptx, lev);
+                            code[cx2].a=cx;
+
+                        }
+						break;
 					}
 					else
 					{
